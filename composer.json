@@ -1,0 +1,21 @@
+{
+    "name": "coencoppens/mahjong",
+    "description": "Mahjong score calculator",
+    "type": "library",
+    "keywords": ["adventofcode"],
+    "homepage": "https://www.coencoppens.nl",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Coen Coppens",
+            "homepage": "https://www.coencoppens.nl"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    
+    "require-dev": {
+        "kint-php/kint": "^1.0"
+    }
+}
