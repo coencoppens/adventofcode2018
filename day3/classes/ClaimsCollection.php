@@ -41,7 +41,7 @@ class ClaimsCollection
      *
      * @var array
      */
-    private $claim_count_per_coordinate = array();
+    private $claims_per_coordinate = array();
     
     /**
      * 
@@ -53,11 +53,12 @@ class ClaimsCollection
         $this->claims[$claim_id] = $claim;
         for ($x = $claim->getMinX(); $x <= $claim->getMaxX(); $x++) {
             for ($y = $claim->getMinY(); $y <= $claim->getMaxY(); $y++) {
-                $coordinate = $x . '.' . $y;
-                if (!isset($this->claim_count_per_coordinate[$coordinate])) {
-                    $this->claim_count_per_coordinate[$coordinate] = 0;
+                $coordinate = $x . ',' . $y;
+                // Multidimensional array causes memory issues
+                if (!isset($this->claims_per_coordinate[$coordinate])) {
+                    $this->claims_per_coordinate[$coordinate] = array();
                 }
-                $this->claim_count_per_coordinate[$coordinate] += 1;
+                $this->claims_per_coordinate[$coordinate][] = $claim_id;
             }
         }
     }
@@ -66,14 +67,32 @@ class ClaimsCollection
      * 
      * @return int
      */
-    public function getCoordinatesCountWithMultipleClaims()
+    public function getCoordinatesWithMultipleClaims()
     {
-        $claim_count_per_coordinate = $this->claim_count_per_coordinate;
-        foreach ($claim_count_per_coordinate as $coordinate => $count) {
-            if (1 >= $count) {
-                unset($claim_count_per_coordinate[$coordinate]);
+        $claims_per_coordinate = $this->claims_per_coordinate;
+        foreach ($claims_per_coordinate as $coordinate => $claim_ids) {
+            if (1 >= count($claim_ids)) {
+                unset($claims_per_coordinate[$coordinate]);
             }
         }
-        return count($claim_count_per_coordinate);
+        return $claims_per_coordinate;
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getClaimIdsWithoutOverlap()
+    {
+        $claims_per_coordinate = $this->claims_per_coordinate;
+        $claim_ids = $this->claims;
+        foreach ($claims_per_coordinate as $coordinate => $coordinate_claim_ids) {
+            if (1 !== count($coordinate_claim_ids)) {
+                foreach ($coordinate_claim_ids as $coordinate_claim_id) {
+                    unset($claim_ids[$coordinate_claim_id]);
+                }
+            }
+        }
+        return array_keys($claim_ids);
     }
 }

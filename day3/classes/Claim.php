@@ -53,13 +53,13 @@ class Claim
      *
      * @var int
      */
-    private $x;
+    private $width;
     
     /**
      *
      * @var int
      */
-    private $y;
+    private $height;
     
     /**
      * 
@@ -75,8 +75,8 @@ class Claim
         $this->offset_y = (int) str_replace(':', '', $offsets[1]);
         
         $dimensions = explode('x', $claim_parts[3]);
-        $this->x = (int) $dimensions[0];
-        $this->y = (int) $dimensions[1];
+        $this->width = (int) $dimensions[0];
+        $this->height = (int) $dimensions[1];
     }
     
     /**
@@ -103,7 +103,7 @@ class Claim
      */
     public function getMaxX()
     {
-        return (($this->offset_x + $this->x) - 1);
+        return ($this->getMinX() + $this->width - 1);
     }
     
     /**
@@ -121,6 +121,6 @@ class Claim
      */
     public function getMaxY()
     {
-        return (($this->offset_y + $this->y) - 1);
+        return ($this->getMinY() + $this->height - 1);
     }
 }
